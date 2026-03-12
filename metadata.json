@@ -1,0 +1,8 @@
+{
+  "name": "颐和康宁 - 老年人共患管理平台",
+  "description": "“颐和”调和阴阳，“康宁”永续五福。基于医防结合与数字化闭环，实现老年人共患实时监测和管理。",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
