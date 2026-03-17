@@ -335,104 +335,99 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ role, onSelectPatient, initialT
   };
 
   const renderPatientCard = (p: Patient) => (
-    <div key={p.id} className="glass-card p-10 rounded-[3.5rem] border border-white/5 hover:border-blue-500/20 transition-all group flex flex-col justify-between h-full">
+    <div key={p.id} className="glass-card p-6 rounded-[2rem] border border-white/5 hover:border-blue-500/20 transition-all group flex flex-col justify-between">
       <div>
-        <div className="flex justify-between items-start mb-8">
-          <div className="flex gap-5">
-            <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+        <div className="flex justify-between items-start mb-5">
+          <div className="flex gap-3">
+            <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
               {p.gender === '男' ? '👴' : '👵'}
             </div>
             <div>
-              <h3 className="text-2xl font-black text-white cursor-pointer hover:text-blue-400" onClick={() => onSelectPatient(p)}>{p.name}</h3>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">{p.age}岁 · {p.district}</p>
+              <h3 className="text-base font-black text-white cursor-pointer hover:text-blue-400" onClick={() => onSelectPatient(p)}>{p.name}</h3>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{p.age}岁 · {p.district}</p>
             </div>
           </div>
-          <button onClick={() => onSelectPatient(p)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-blue-400">􀄪</button>
+          <button onClick={() => onSelectPatient(p)} className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-blue-400 text-sm">›</button>
         </div>
         
-        <div className="bg-rose-500/5 p-5 rounded-[2rem] border border-rose-500/10 mb-8 min-h-[80px] flex flex-col justify-center">
+        <div className="bg-rose-500/5 p-4 rounded-[1.5rem] border border-rose-500/10 mb-4 min-h-[60px] flex flex-col justify-center">
           <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest mb-1">转诊原因 / 管理不达标详情</p>
           <p className="text-xs font-bold text-slate-200 leading-relaxed">{p.nonComplianceType}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-8">
-           <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+        <div className="grid grid-cols-2 gap-3 mb-4">
+           <div className="p-3 bg-white/5 rounded-xl border border-white/5">
               <p className="text-[8px] text-slate-500 uppercase font-black mb-1">最近血压</p>
-              <p className="text-lg font-black text-white">{p.metrics[0].bp_sys}/{p.metrics[0].bp_dia}</p>
+              <p className="text-base font-black text-white">{p.metrics[0].bp_sys}/{p.metrics[0].bp_dia}</p>
            </div>
-           <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+           <div className="p-3 bg-white/5 rounded-xl border border-white/5">
               <p className="text-[8px] text-slate-500 uppercase font-black mb-1">最近血糖</p>
-              <p className="text-lg font-black text-white">{p.metrics[0].glucose}</p>
+              <p className="text-base font-black text-white">{p.metrics[0].glucose}</p>
            </div>
         </div>
       </div>
 
       <div className="space-y-4">
-        {/* 全科端逻辑 (不作修改) */}
         {activeSubTab === 'gp_verify' && (
-          <div className="flex gap-3">
-            <button className="flex-1 py-5 bg-blue-600 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all">核实并转入管理</button>
-            <button className="flex-1 py-5 bg-white/5 border border-white/10 text-slate-400 rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest active:scale-95 transition-all">非管辖退回</button>
+          <div className="flex gap-2 mt-2">
+            <button className="flex-1 py-3 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">核实并转入管理</button>
+            <button className="flex-1 py-3 bg-white/5 border border-white/10 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">非管辖退回</button>
           </div>
         )}
         {activeSubTab === 'gp_followup' && (
-          <div className="grid grid-cols-2 gap-3">
-             <button className="py-4 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all">健康干预</button>
-             <button className="py-4 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">疫苗屏障</button>
-             <button className="col-span-2 py-4 bg-orange-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">发起医疗救助/转诊</button>
+          <div className="grid grid-cols-2 gap-2 mt-2">
+             <button className="py-3 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all">健康干预</button>
+             <button className="py-3 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">疫苗屏障</button>
+             <button className="col-span-2 py-3 bg-orange-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">发起医疗救助/转诊</button>
           </div>
         )}
         {activeSubTab === 'gp_referral' && (
-          <div className="space-y-5">
-             <div className="glass-card p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-[2rem]">
-                <p className="text-[9px] text-indigo-400 font-black uppercase tracking-widest mb-2">DeepSeek AI 转诊辅助建议</p>
-                <p className="text-[11px] text-indigo-100/80 leading-relaxed italic">"根据患者病情波动，建议上划至三级医院心内科进行深度评估。"</p>
+          <div className="space-y-3 mt-2">
+             <div className="glass-card p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl">
+                <p className="text-[9px] text-indigo-400 font-black uppercase tracking-widest mb-1">AI 转诊辅助建议</p>
+                <p className="text-[10px] text-indigo-100/80 leading-relaxed italic">"根据患者病情波动，建议上划至三级医院心内科进行深度评估。"</p>
              </div>
-             <div className="space-y-3">
-                <select className="w-full bg-slate-900 border border-white/10 rounded-2xl px-5 py-4 text-[10px] font-black text-slate-300 outline-none"><option>-- 择转诊医疗机构 --</option><option>上海市东方医院</option></select>
-                <select className="w-full bg-slate-900 border border-white/10 rounded-2xl px-5 py-4 text-[10px] font-black text-slate-300 outline-none"><option>-- 选择意向专科医生 --</option><option>王主任 (首席专家)</option></select>
+             <div className="space-y-2">
+                <select className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-[10px] font-black text-slate-300 outline-none"><option>-- 择转诊医疗机构 --</option><option>上海市东方医院</option></select>
+                <select className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 text-[10px] font-black text-slate-300 outline-none"><option>-- 选择意向专科医生 --</option><option>王主任 (首席专家)</option></select>
              </div>
-             <button className="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest shadow-2xl active:scale-95">提交转诊申请单</button>
+             <button className="w-full py-3 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95">提交转诊申请单</button>
           </div>
         )}
-
-        {/* 专科端逻辑 (新增修改内容) */}
         {activeSubTab === 'spec_referral_reception' && (
-          <div className="flex flex-col gap-3">
-            <button className="w-full py-5 bg-emerald-600 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all">确认接收转诊</button>
+          <div className="flex flex-col gap-2 mt-2">
+            <button className="w-full py-3 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">确认接收转诊</button>
             <div className="flex gap-2">
-               <button className="flex-1 py-4 bg-white/5 border border-white/10 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95">拒绝</button>
-               <button className="flex-1 py-4 bg-orange-600/20 border border-orange-500/30 text-orange-400 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95">建议再上转</button>
+               <button className="flex-1 py-2.5 bg-white/5 border border-white/10 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest active:scale-95">拒绝</button>
+               <button className="flex-1 py-2.5 bg-orange-600/20 border border-orange-500/30 text-orange-400 rounded-xl text-[10px] font-black uppercase tracking-widest active:scale-95">建议再上转</button>
             </div>
           </div>
         )}
         {activeSubTab === 'spec_appointment_center' && (
-           <button onClick={() => handleNotifyPatient(p)} className="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] text-[11px] font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3">
-              􀥄 通知患者就诊信息
+           <button onClick={() => handleNotifyPatient(p)} className="w-full py-3 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all mt-2">
+              通知患者就诊信息
            </button>
         )}
-
-        {/* 疾控端逻辑 (不作修改) */}
         {activeSubTab === 'cdc_overview' && (
-           <button onClick={() => onSelectPatient(p)} className="w-full py-5 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest">👁️ 查看健康数字孪生</button>
+           <button onClick={() => onSelectPatient(p)} className="w-full py-3 bg-blue-600/10 border border-blue-500/30 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest mt-2">👁️ 查看健康数字孪生</button>
         )}
         {activeSubTab === 'cdc_dispatch' && (
-           <button className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg">🎯 确认派发街道中心</button>
+           <button className="w-full py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg mt-2">🎯 确认派发街道中心</button>
         )}
       </div>
     </div>
   );
 
   return (
-    <div className="space-y-12 animate-in fade-in duration-700 max-w-full mx-auto px-4 lg:px-12 pb-48 relative min-h-screen">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/5 pb-12">
+    <div className="space-y-8 animate-in fade-in duration-700 max-w-full mx-auto px-4 lg:px-12 pb-36 relative min-h-screen">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-white/5 pb-8">
         <div>
-           <h2 className="text-5xl font-black text-white tracking-tighter font-yihe italic">{config?.title}</h2>
-           <p className="text-[11px] text-slate-500 font-black uppercase tracking-[0.6em] mt-3 italic">Medical-Prevention Digital Command Hub</p>
+           <h2 className="text-2xl font-black text-white tracking-tight font-yihe">{config?.title}</h2>
+           <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] mt-1">Medical-Prevention Digital Command Hub</p>
         </div>
-        <div className="flex bg-slate-900/80 p-2 rounded-[2.5rem] border border-white/10 shadow-inner overflow-x-auto no-scrollbar">
+        <div className="flex bg-slate-900/80 p-1.5 rounded-[2rem] border border-white/10 shadow-inner overflow-x-auto no-scrollbar">
           {config?.tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveSubTab(tab.id)} className={`whitespace-nowrap px-10 py-4 rounded-[2rem] text-[11px] font-black transition-all flex items-center gap-3 ${activeSubTab === tab.id ? 'bg-blue-600 text-white shadow-2xl scale-105' : 'text-slate-500 hover:text-slate-300'}`}>
+            <button key={tab.id} onClick={() => setActiveSubTab(tab.id)} className={`whitespace-nowrap px-6 py-3 rounded-[1.5rem] text-[11px] font-black transition-all flex items-center gap-2 ${activeSubTab === tab.id ? 'bg-blue-600 text-white shadow-2xl' : 'text-slate-500 hover:text-slate-300'}`}>
               <span>{tab.icon}</span>{tab.label}
             </button>
           ))}

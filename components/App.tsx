@@ -109,15 +109,15 @@ const App: React.FC = () => {
       
       <main className={`flex-1 transition-all duration-700 h-screen overflow-y-auto custom-scrollbar ${
         isBigScreenActive ? 'ml-0' : (currentRole === UserRole.PATIENT && !hasOnboarded) ? 'ml-0' : 'ml-80'
-      } mr-0 p-8 lg:p-12 xl:p-16`}>
+      } mr-0 p-6 lg:p-10 pb-20`}>
         {renderContent()}
       </main>
 
-      <div className="fixed bottom-12 left-1/2 -translate-x-1/2 glass-card p-2 rounded-[2.5rem] flex gap-1 tech-shadow z-50 border border-white/20 scale-90">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 glass-card p-1.5 rounded-[2rem] flex gap-1 tech-shadow z-50 border border-white/20">
         {[
           { r: UserRole.CDC_ADMIN, label: '疾控端', color: 'bg-indigo-600' },
           { r: UserRole.COMMUNITY_GP, label: '全科端', color: 'bg-blue-600' },
-          { r: UserRole.HOSPITAL_SPECIALIST, label: '专科端', color: 'bg-slate-800' },
+          { r: UserRole.HOSPITAL_SPECIALIST, label: '专科端', color: 'bg-slate-700' },
           { r: UserRole.PATIENT, label: '患者端', color: 'bg-emerald-600' }
         ].map(item => (
           <button 
@@ -132,8 +132,8 @@ const App: React.FC = () => {
               }
               setSelectedPatient(null);
             }}
-            className={`px-8 py-3 rounded-[2rem] text-[10px] font-black tracking-widest transition-all ${
-              currentRole === item.r ? `${item.color} text-white shadow-2xl` : 'text-slate-500 hover:text-white'
+            className={`px-6 py-2.5 rounded-[1.5rem] text-[10px] font-black tracking-widest transition-all ${
+              currentRole === item.r ? `${item.color} text-white shadow-lg` : 'text-slate-500 hover:text-white'
             }`}
           >
             {item.label}
