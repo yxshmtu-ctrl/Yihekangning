@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserRole, Patient, PatientStatus } from '../types';
 import { getReferralAdvice } from '../services/geminiService';
+import { REAL_CDC_POOL, REAL_GP_VERIFY_POOL, REAL_GP_FOLLOWUP_POOL, REAL_GP_REFERRAL_POOL, REAL_SPEC_POOL } from '../data/realPatients';
 
 // ==========================================
 // 1. 疾控端 示例数据 (保持原样，不作修改)
@@ -159,14 +160,14 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ role, onSelectPatient, initialT
 
   useEffect(() => {
     switch (activeSubTab) {
-      case 'cdc_overview': setPatients(CDC_MANAGED_OVERVIEW); break;
-      case 'cdc_dispatch': setPatients(CDC_DISPATCH_POOL); break;
-      case 'gp_verify': setPatients(GP_VERIFY_POOL); break;
-      case 'gp_followup': setPatients(GP_FOLLOWUP_POOL); break;
-      case 'gp_referral': setPatients(GP_REFERRAL_POOL); break;
-      case 'spec_referral_reception': setPatients(SPEC_REFERRAL_RECEPTION_POOL); break;
-      case 'spec_appointment_center': setPatients(SPEC_APPOINTMENT_SCHEDULE); break;
-      case 'spec_clinical_process': setPatients([SPEC_REFERRAL_RECEPTION_POOL[0]]); break;
+      case 'cdc_overview': setPatients(REAL_CDC_POOL); break;
+      case 'cdc_dispatch': setPatients(REAL_CDC_POOL); break;
+      case 'gp_verify': setPatients(REAL_GP_VERIFY_POOL); break;
+      case 'gp_followup': setPatients(REAL_GP_FOLLOWUP_POOL); break;
+      case 'gp_referral': setPatients(REAL_GP_REFERRAL_POOL); break;
+      case 'spec_referral_reception': setPatients(REAL_SPEC_POOL); break;
+      case 'spec_appointment_center': setPatients(REAL_SPEC_POOL); break;
+      case 'spec_clinical_process': setPatients([REAL_SPEC_POOL[0]]); break;
       default: setPatients([]);
     }
   }, [activeSubTab]);
@@ -419,7 +420,7 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ role, onSelectPatient, initialT
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700 max-w-full mx-auto px-4 lg:px-12 pb-36 relative min-h-screen">
+    <div className="space-y-6 animate-in fade-in duration-700 max-w-full mx-auto px-2 lg:px-12 pb-28 relative min-h-screen">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-white/5 pb-8">
         <div>
            <h2 className="text-2xl font-black text-white tracking-tight font-yihe">{config?.title}</h2>
@@ -440,7 +441,7 @@ const TaskCenter: React.FC<TaskCenterProps> = ({ role, onSelectPatient, initialT
         ) : activeSubTab === 'spec_clinical_process' ? (
            renderClinicalProcessUI()
         ) : patients.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 items-stretch">
             {patients.map(p => renderPatientCard(p))}
           </div>
         ) : (
