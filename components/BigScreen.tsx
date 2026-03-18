@@ -97,10 +97,19 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
           <div style={{width:32,height:32,border:'1.5px solid #22d3ee',borderRadius:7,display:'flex',alignItems:'center',justifyContent:'center',color:'#22d3ee',fontWeight:900,fontSize:15,boxShadow:'0 0 16px rgba(34,211,238,.5),inset 0 0 8px rgba(34,211,238,.1)'}}>✚</div>
           <div>
             <div style={{color:'#fff',fontWeight:900,fontSize:14,letterSpacing:'0.1em',textShadow:'0 0 16px rgba(34,211,238,.3)'}}>浦东新区医防融合指挥大屏</div>
-            <div style={{color:'#22d3ee',fontSize:6.5,fontWeight:700,letterSpacing:'0.36em',opacity:.45,textTransform:'uppercase'}}>PUDONG NEW AREA · MEDICAL-PREVENTION INTEGRATED HUD v6.0</div>
+            <div className="bigscreen-title-sub" style={{color:'#22d3ee',fontSize:6.5,fontWeight:700,letterSpacing:'0.36em',opacity:.45,textTransform:'uppercase'}}>PUDONG NEW AREA · MEDICAL-PREVENTION INTEGRATED HUD v6.0</div>
           </div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:5}}>
+          {/* 视图切换下拉 */}
+          <select value={mapView} onChange={e=>setMapView(e.target.value)}
+            style={{background:'rgba(0,242,255,.08)',border:'1px solid rgba(0,242,255,.35)',borderRadius:7,color:'#22d3ee',fontSize:9,fontWeight:900,padding:'5px 24px 5px 9px',cursor:'pointer',outline:'none',letterSpacing:'0.08em',backdropFilter:'blur(12px)',appearance:'none',WebkitAppearance:'none',backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2322d3ee'/%3E%3C/svg%3E")`,backgroundRepeat:'no-repeat',backgroundPosition:'right 7px center',boxShadow:'0 0 10px rgba(0,242,255,.15)'}}>
+            <option value="heat">🔥 热力视图</option>
+            <option value="boundary">🗺️ 边界视图</option>
+            <option value="hospital">🏥 医联体视图</option>
+            <option value="risk">⚠️ 风险视图</option>
+          </select>
+          <div style={{width:1,height:28,background:'rgba(255,255,255,.08)',margin:'0 2px'}}/>
           {[
             {l:'在管总人数',v:String(REAL_CDC_POOL.length+1847),u:'人',c:'#22d3ee'},
             {l:'高危预警',v:'47',u:'例',c:'#ef4444'},
@@ -108,7 +117,7 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
             {l:'急诊候诊',v:'10.4',u:'min',c:'#22c55e'},
             {l:'AI筛查',v:'328',u:'次/日',c:'#818cf8'},
           ].map((it,i)=>(
-            <div key={i} style={{textAlign:'center',padding:'4px 9px',background:`${it.c}0e`,border:`1px solid ${it.c}20`,borderRadius:7}}>
+            <div key={i} className="bigscreen-kpi-item" style={{textAlign:'center',padding:'4px 9px',background:`${it.c}0e`,border:`1px solid ${it.c}20`,borderRadius:7}}>
               <div style={{fontSize:6,color:'#64748b',fontWeight:900,textTransform:'uppercase',marginBottom:1,whiteSpace:'nowrap'}}>{it.l}</div>
               <div style={{fontSize:15,fontWeight:900,color:it.c,lineHeight:1}}>{it.v}<span style={{fontSize:7,marginLeft:2,opacity:.5}}>{it.u}</span></div>
             </div>
@@ -120,11 +129,12 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
         </div>
       </header>
 
-      {/* BODY */}
-      <div style={{flex:1,display:'grid',gridTemplateColumns:'248px 1fr 248px',gap:7,padding:7,overflow:'hidden',position:'relative',zIndex:2}}>
+      {/* BODY - 响应式布局 */}
+      <div style={{flex:1,display:'grid',gridTemplateColumns:'248px 1fr 248px',gap:7,padding:7,overflow:'hidden',position:'relative',zIndex:2}}
+        className="bigscreen-body">
 
         {/* 左栏 */}
-        <div style={{display:'flex',flexDirection:'column',gap:7}}>
+        <div className="bigscreen-left" style={{display:'flex',flexDirection:'column',gap:7}}>
           <div style={{...C,flex:1.5,padding:'10px 12px'}}>
             <T t="街镇慢病热力排行"/>
             <div style={{flex:1,overflowY:'auto',marginTop:7}}>
@@ -163,7 +173,7 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
         </div>
 
         {/* 中央真实地图 */}
-        <div style={{position:'relative',overflow:'hidden',borderRadius:12,border:'1px solid rgba(0,242,255,.12)',background:'#010d20'}}>
+        <div className="bigscreen-map" style={{position:'relative',overflow:'hidden',borderRadius:12,border:'1px solid rgba(0,242,255,.12)',background:'#010d20'}}>
           {/* 四角装饰 */}
           {[{top:10,left:10,bt:true,bl:true},{top:10,right:10,bt:true,br:true},{bottom:10,left:10,bb:true,bl:true},{bottom:10,right:10,bb:true,br:true}].map((s,i)=>(
             <div key={i} style={{position:'absolute',...s,width:18,height:18,
@@ -173,16 +183,10 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
               borderRight:(s as any).br?'2px solid rgba(0,242,255,.4)':'none',zIndex:5}}/>
           ))}
 
-          <div style={{position:'absolute',top:10,left:'50%',transform:'translateX(-50%)',zIndex:6,textAlign:'center',display:'flex',flexDirection:'column',alignItems:'center',gap:6}}>
-            <div style={{fontSize:9.5,fontWeight:900,color:'rgba(34,211,238,.6)',letterSpacing:'0.26em',textTransform:'uppercase',textShadow:'0 0 10px rgba(34,211,238,.3)',pointerEvents:'none'}}>浦东新区 · 真实社区边界 · 1519个地块</div>
-            {/* 视图切换下拉框 */}
-            <select value={mapView} onChange={e=>setMapView(e.target.value)}
-              style={{background:'rgba(1,8,20,.92)',border:'1px solid rgba(0,242,255,.3)',borderRadius:8,color:'#22d3ee',fontSize:8.5,fontWeight:900,padding:'4px 28px 4px 10px',cursor:'pointer',outline:'none',letterSpacing:'0.12em',backdropFilter:'blur(12px)',boxShadow:'0 0 12px rgba(0,242,255,.15)',appearance:'none',WebkitAppearance:'none',backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2322d3ee'/%3E%3C/svg%3E")`,backgroundRepeat:'no-repeat',backgroundPosition:'right 8px center'}}>
-              <option value="heat">🔥 慢病热力视图</option>
-              <option value="boundary">🗺️ 社区边界视图</option>
-              <option value="hospital">🏥 医联体辐射视图</option>
-              <option value="risk">⚠️ 风险分级视图</option>
-            </select>
+          <div style={{position:'absolute',top:10,left:'50%',transform:'translateX(-50%)',zIndex:6,textAlign:'center',pointerEvents:'none'}}>
+            <div style={{fontSize:9.5,fontWeight:900,color:'rgba(34,211,238,.6)',letterSpacing:'0.26em',textTransform:'uppercase',textShadow:'0 0 10px rgba(34,211,238,.3)'}}>
+              浦东新区 · {{heat:'慢病热力',boundary:'社区边界',hospital:'医联体辐射',risk:'风险分级'}[mapView]} · 1519个地块
+            </div>
           </div>
 
           <svg viewBox="0 0 580 630" style={{width:'100%',height:'100%',display:'block'}} preserveAspectRatio="xMidYMid meet">
@@ -339,7 +343,7 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
         </div>
 
         {/* 右栏 */}
-        <div style={{display:'flex',flexDirection:'column',gap:7}}>
+        <div className="bigscreen-right" style={{display:'flex',flexDirection:'column',gap:7}}>
           <div style={{...C,flex:1.4,padding:'10px 12px'}}>
             <T t="医联体实时负荷"/>
             <div style={{flex:1,overflowY:'auto',marginTop:6}}>
@@ -415,7 +419,53 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
         </div>
       </footer>
 
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}`}</style>
+      <style>{`
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+        /* 横屏桌面/平板：三栏布局 */
+        .bigscreen-body {
+          grid-template-columns: 248px 1fr 248px;
+        }
+
+        /* 竖屏手机：地图全宽，左右栏折叠到下方滚动 */
+        @media (max-width: 768px) and (orientation: portrait) {
+          .bigscreen-body {
+            grid-template-columns: 1fr !important;
+            grid-template-rows: auto 60vw auto auto;
+            overflow-y: auto !important;
+          }
+          .bigscreen-left  { order: 2; max-height: 280px; overflow-y: auto; }
+          .bigscreen-map   { order: 1; height: 60vw; min-height: 280px; }
+          .bigscreen-right { order: 3; max-height: 280px; overflow-y: auto; }
+        }
+
+        /* 横屏手机/小平板：窄三栏 */
+        @media (max-width: 900px) and (orientation: landscape) {
+          .bigscreen-body {
+            grid-template-columns: 180px 1fr 180px !important;
+          }
+        }
+
+        /* 中等平板竖屏：两栏（地图+右侧） */
+        @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+          .bigscreen-body {
+            grid-template-columns: 1fr 200px !important;
+          }
+          .bigscreen-left { display: none !important; }
+        }
+
+        /* Header 响应式：手机隐藏部分指标 */
+        @media (max-width: 768px) {
+          .bigscreen-kpi-item:nth-child(n+4) { display: none !important; }
+          .bigscreen-title-sub { display: none !important; }
+        }
+        @media (max-width: 480px) {
+          .bigscreen-kpi-item:nth-child(n+3) { display: none !important; }
+        }
+
+        select option { background: #0a1628; color: #22d3ee; }
+      `}</style>
     </div>
   );
 };
