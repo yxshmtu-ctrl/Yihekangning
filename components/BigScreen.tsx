@@ -60,6 +60,7 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
   const [time,setTime]=useState(new Date().toLocaleTimeString());
   const [hov,setHov]=useState<any>(null);
   const [sel,setSel]=useState<any>(null);
+  const [mapView,setMapView]=useState('heat');
   const canvasRef=useRef<HTMLCanvasElement>(null);
 
   useEffect(()=>{
@@ -172,8 +173,16 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
               borderRight:(s as any).br?'2px solid rgba(0,242,255,.4)':'none',zIndex:5}}/>
           ))}
 
-          <div style={{position:'absolute',top:12,left:'50%',transform:'translateX(-50%)',zIndex:6,pointerEvents:'none',textAlign:'center'}}>
-            <div style={{fontSize:10,fontWeight:900,color:'rgba(34,211,238,.65)',letterSpacing:'0.28em',textTransform:'uppercase',textShadow:'0 0 10px rgba(34,211,238,.3)'}}>浦东新区 · 真实社区边界 · 1519个地块</div>
+          <div style={{position:'absolute',top:10,left:'50%',transform:'translateX(-50%)',zIndex:6,textAlign:'center',display:'flex',flexDirection:'column',alignItems:'center',gap:6}}>
+            <div style={{fontSize:9.5,fontWeight:900,color:'rgba(34,211,238,.6)',letterSpacing:'0.26em',textTransform:'uppercase',textShadow:'0 0 10px rgba(34,211,238,.3)',pointerEvents:'none'}}>浦东新区 · 真实社区边界 · 1519个地块</div>
+            {/* 视图切换下拉框 */}
+            <select value={mapView} onChange={e=>setMapView(e.target.value)}
+              style={{background:'rgba(1,8,20,.92)',border:'1px solid rgba(0,242,255,.3)',borderRadius:8,color:'#22d3ee',fontSize:8.5,fontWeight:900,padding:'4px 28px 4px 10px',cursor:'pointer',outline:'none',letterSpacing:'0.12em',backdropFilter:'blur(12px)',boxShadow:'0 0 12px rgba(0,242,255,.15)',appearance:'none',WebkitAppearance:'none',backgroundImage:`url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2322d3ee'/%3E%3C/svg%3E")`,backgroundRepeat:'no-repeat',backgroundPosition:'right 8px center'}}>
+              <option value="heat">🔥 慢病热力视图</option>
+              <option value="boundary">🗺️ 社区边界视图</option>
+              <option value="hospital">🏥 医联体辐射视图</option>
+              <option value="risk">⚠️ 风险分级视图</option>
+            </select>
           </div>
 
           <svg viewBox="0 0 580 630" style={{width:'100%',height:'100%',display:'block'}} preserveAspectRatio="xMidYMid meet">
@@ -198,37 +207,42 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
 
             {/* ── 真实社区边界多边形 ── */}
             {/* 低危区域 (risk=1) */}
-            <g fill="rgba(34,197,94,.06)" stroke="rgba(34,197,94,.22)" strokeWidth=".5">
+            <g fill={mapView==='risk'?"rgba(34,197,94,.14)":"rgba(34,197,94,.06)"} stroke={mapView==='boundary'?"rgba(34,197,94,.4)":"rgba(34,197,94,.22)"} strokeWidth={mapView==='boundary'?".8":".5"}>
               {R1.map((d,i)=><path key={i} d={d}/>)}
             </g>
             {/* 中危区域 (risk=2) */}
-            <g fill="rgba(249,115,22,.07)" stroke="rgba(249,115,22,.25)" strokeWidth=".5">
+            <g fill={mapView==='risk'?"rgba(249,115,22,.14)":"rgba(249,115,22,.07)"} stroke={mapView==='boundary'?"rgba(249,115,22,.4)":"rgba(249,115,22,.25)"} strokeWidth={mapView==='boundary'?".8":".5"}>
               {R2.map((d,i)=><path key={i} d={d}/>)}
             </g>
             {/* 高危区域 (risk=3) */}
-            <g fill="rgba(239,68,68,.09)" stroke="rgba(239,68,68,.28)" strokeWidth=".6">
+            <g fill={mapView==='risk'?"rgba(239,68,68,.18)":"rgba(239,68,68,.09)"} stroke={mapView==='boundary'?"rgba(239,68,68,.45)":"rgba(239,68,68,.28)"} strokeWidth={mapView==='boundary'?"1":".6"}>
               {R3.map((d,i)=><path key={i} d={d}/>)}
             </g>
             {/* 极高危区域 (risk=4) */}
-            <g fill="rgba(220,38,38,.13)" stroke="rgba(220,38,38,.38)" strokeWidth=".7">
+            <g fill={mapView==='risk'?"rgba(220,38,38,.24)":"rgba(220,38,38,.13)"} stroke={mapView==='boundary'?"rgba(220,38,38,.55)":"rgba(220,38,38,.38)"} strokeWidth={mapView==='boundary'?"1.2":".7"}>
               {R4.map((d,i)=><path key={i} d={d}/>)}
             </g>
 
-            {/* 热力叠加层 */}
-            <g filter="url(#blur22)" opacity=".75">
-              {TOWNS.map(t=>(
-                <circle key={t.id} cx={t.x} cy={t.y}
-                  r={32+(t.pts/156)*50+(t.risk*5)}
-                  fill={`url(#h${t.risk})`}/>
-              ))}
-            </g>
+            {/* 热力叠加层（仅热力和风险视图显示） */}
+            {mapView!=='boundary'&&mapView!=='hospital'&&(
+              <g filter="url(#blur22)" opacity=".75">
+                {TOWNS.map(t=>(
+                  <circle key={t.id} cx={t.x} cy={t.y}
+                    r={32+(t.pts/156)*50+(t.risk*5)}
+                    fill={`url(#h${t.risk})`}/>
+                ))}
+              </g>
+            )}
 
-            {/* 医联体辐射圈 */}
+            {/* 医联体辐射圈（hospital视图更显眼） */}
             {HOSPITALS.map(h=>(
-              <g key={h.id}>
-                <circle cx={h.x} cy={h.y} r={h.r} fill={`url(#hg${h.id})`}/>
-                <circle cx={h.x} cy={h.y} r={h.r} fill="none" stroke={SC(h.st)} strokeWidth=".6" strokeDasharray={`${h.r*.3} ${h.r*5}`} opacity=".28"
+              <g key={h.id} opacity={mapView==='hospital'?1:0.6}>
+                <circle cx={h.x} cy={h.y} r={mapView==='hospital'?h.r*1.4:h.r} fill={`url(#hg${h.id})`} opacity={mapView==='hospital'?1.5:1}/>
+                <circle cx={h.x} cy={h.y} r={mapView==='hospital'?h.r*1.4:h.r} fill="none" stroke={SC(h.st)} strokeWidth={mapView==='hospital'?1:".6"} strokeDasharray={`${h.r*.3} ${h.r*5}`} opacity={mapView==='hospital'?.5:".28"}
                   style={{transformOrigin:`${h.x}px ${h.y}px`,animation:`spin ${8+h.r*.04}s linear infinite`}}/>
+                {mapView==='hospital'&&(
+                  <circle cx={h.x} cy={h.y} r={h.r*.5} fill="none" stroke={SC(h.st)} strokeWidth=".5" strokeDasharray="2 5" opacity=".3"/>
+                )}
               </g>
             ))}
 
@@ -246,7 +260,7 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
               );
             })}
 
-            {/* 街镇中心标注 */}
+            {/* 街镇中心标注 - 全部显示 */}
             {TOWNS.map(t=>(
               <g key={t.id} transform={`translate(${t.x},${t.y})`} style={{cursor:'pointer'}} onClick={()=>setSel(sel?.id===t.id?null:t)}>
                 {/* 脉冲 */}
@@ -256,11 +270,14 @@ const BigScreen:React.FC<{onClose:()=>void}>=({onClose})=>{
                 </circle>
                 <circle r="3.5" fill={RC(t.risk)} opacity=".85" filter="url(#glow3)"/>
                 <circle r="1.5" fill="rgba(255,255,255,.55)"/>
-                {/* 标签（仅显示镇级或重要街道） */}
-                {(t.pts>80 || ['sl','hn','zj','hm','zp','bc'].includes(t.id)) && (
-                  <g>
-                    <rect x={-t.name.length*3.5-3} y="-20" width={t.name.length*7+6} height="12" rx="3" fill="rgba(1,8,20,.9)" stroke={`${RC(t.risk)}45`} strokeWidth=".6"/>
-                    <text x="0" textAnchor="middle" y="-11" fill={RC(t.risk)} fontSize="7.5" fontWeight="900">{t.name}</text>
+                {/* 所有街镇都显示名字标签 */}
+                <rect x={-t.name.length*3.5-3} y="-20" width={t.name.length*7+6} height="12" rx="3" fill="rgba(1,8,20,.88)" stroke={`${RC(t.risk)}40`} strokeWidth=".6"/>
+                <text x="0" textAnchor="middle" y="-11" fill={RC(t.risk)} fontSize={t.pts>100?8.5:7} fontWeight="900">{t.name}</text>
+                {/* 患者数（高危或患者多的显示） */}
+                {(t.pts>90||t.risk>=3)&&(
+                  <g transform="translate(0,8)">
+                    <rect x="-9" y="-5" width="18" height="9" rx="3" fill={`${RC(t.risk)}22`} stroke={`${RC(t.risk)}44`} strokeWidth=".5"/>
+                    <text x="0" textAnchor="middle" y="2" fill={RC(t.risk)} fontSize="6.5" fontWeight="900">{t.pts}</text>
                   </g>
                 )}
               </g>
